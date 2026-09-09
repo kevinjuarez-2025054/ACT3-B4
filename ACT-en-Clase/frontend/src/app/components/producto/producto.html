@@ -1,46 +1,78 @@
-<h1>Productos</h1>
+<div class="header-container">
+  <h1>Productos</h1>
+  
+  <div class="actions-nav">
+    <button class="btn btn-secondary" (click)="recargarPagina()">
+      Recargar
+    </button>
+    
+    <a routerLink="/productos/nuevo" class="btn btn-primary">
+      Registrar nuevo producto
+    </a>
 
-<button (click)="recargarPagina()">
-  Recargar
-</button>
+    <!-- ICONO DE CARRITO REPARADO CON ROUTERLINK DIRECTO -->
+    <a routerLink="/carrito" class="btn-cart-icon" title="Ver carrito de compras">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="icon-svg">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 0 0-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 0 0-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Zm12.75 0a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0Z" />
+      </svg>
+      @if (obtenerArticulosEnCarrito() > 0) {
+        <span class="cart-badge">{{ obtenerArticulosEnCarrito() }}</span>
+      }
+    </a>
+  </div>
+</div>
 
-<a routerLink="/productos/nuevo" style="display:inline-block; margin-left: 10px;">
-  Registrar nuevo producto
-</a>
 
 @if (errorEliminar) {
-  <p style="color:#dc2626;">{{ errorEliminar }}</p>
+  <p class="error-message">{{ errorEliminar }}</p>
 }
 
-<table>
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Nombre</th>
-      <th>Precio</th>
-      <th>Cantidad</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
+<div class="cards-grid">
+  @for (producto of productos; track producto.id) {
+    <div class="card">
+      <div class="card-body">
+        <span class="product-id">ID: {{ producto.id }}</span>
+        <h3 class="product-title">{{ producto.nombre }}</h3>
+        <p class="product-price">Q{{ producto.precio }}</p>
+        <p class="product-stock">Stock disponible: {{ producto.cantidad }}</p>
+      </div>
+      
+      <div class="card-footer">
+        <!-- SELECTOR DE VARIAS UNIDADES (CORREGIDO CON INTERPOLACIÓN EN EL ID Y FOR) -->
+        <div class="quantity-selector mb-2">
+          <label for="qty-{{ producto.id }}">Cantidad:</label>
+          <input 
+            type="number" 
+            id="qty-{{ producto.id }}" 
+            #inputCantidad
+            value="1" 
+            min="1" 
+            [max]="producto.cantidad"
+            class="input-qty-selector"
+          />
+        </div>
 
-  <tbody>
-    @for (producto of productos; track producto.id) {
-      <tr>
-        <td>{{ producto.id }}</td>
-        <td>{{ producto.nombre }}</td>
-        <td>Q{{ producto.precio }}</td>
-        <td>{{ producto.cantidad }}</td>
-        <td>
-          <a [routerLink]="['/productos/editar', producto.id]">Editar</a>
-          &nbsp;|&nbsp;
+        <button 
+          class="btn btn-success w-full mb-2" 
+          (click)="agregarAlCarrito(producto, +inputCantidad.value)"
+          [disabled]="producto.cantidad <= 0"
+        >
+          Agregar al carrito
+        </button>
+        
+        <div class="admin-actions">
+          <a [routerLink]="['/productos/editar', producto.id]" class="link-edit">Editar</a>
           <button
+            class="btn-delete"
             (click)="eliminarProducto(producto.id)"
             [disabled]="eliminando === producto.id"
           >
             {{ eliminando === producto.id ? 'Eliminando...' : 'Eliminar' }}
           </button>
-        </td>
-      </tr>
-    }
-  </tbody>
-</table>
+        </div>
+      </div>
+    </div>
+  } @empty {
+    <p>No hay productos disponibles.</p>
+  }
+</div>

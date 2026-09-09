@@ -1,0 +1,35 @@
+<div class="carrito-container">
+  <h2>Tu Carrito de Compras</h2>
+
+  @if (items.length === 0) {
+    <p>El carrito está vacío.</p>
+  } @else {
+    <ul class="carrito-list">
+      @for (item of items; track item.producto.id) {
+        <li class="carrito-item">
+          <div class="item-info">
+            <span class="item-name">{{ item.producto.nombre }}</span>
+            <span class="item-qty">x{{ item.cantidadSeleccionada }}</span>
+          </div>
+          <div class="item-price-actions">
+            <span>Q{{ item.producto.precio * item.cantidadSeleccionada }}</span>
+            <button class="btn-remove" (click)="eliminarDelCarrito(item.producto.id)">
+              &times;
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+
+    <div class="carrito-summary">
+      <div class="total-row">
+        <strong>Total:</strong>
+        <span class="total-amount">Q{{ obtenerTotal() }}</span>
+      </div>
+      <div class="summary-actions">
+        <button class="btn btn-secondary" (click)="vaciarCarrito()">Vaciar</button>
+        <button class="btn btn-success" (click)="procesarCompra()">Pagar</button>
+      </div>
+    </div>
+  }
+</div>
