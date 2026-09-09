@@ -1,0 +1,96 @@
+<div class="contenedor">
+  <h1>{{ modoEdicion ? 'Editar Producto' : 'Registro de Productos' }}</h1>
+  <a routerLink="/productos" class="enlace-volver">Ver listado de productos</a>
+
+  <form [formGroup]="productoForm" (ngSubmit)="onSubmit()" novalidate>
+
+    <!-- Campo: nombre -->
+    <div class="campo">
+      <label for="nombre">Nombre del producto</label>
+      <input
+        id="nombre"
+        type="text"
+        formControlName="nombre"
+        [class.invalido]="campoInvalido('nombre')"
+        placeholder="Ej. Teclado mecánico"
+      />
+
+      <!-- *ngIf: solo se muestra el bloque de errores si el campo es inválido -->
+      @if (campoInvalido('nombre')) {
+        <ul class="errores">
+          <!-- *ngFor: se listan todos los mensajes de error activos para este campo -->
+          @for (mensaje of obtenerErrores('nombre'); track mensaje) {
+            <li>{{ mensaje }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Campo: precio -->
+    <div class="campo">
+      <label for="precio">Precio (Q)</label>
+      <input
+        id="precio"
+        type="number"
+        step="0.01"
+        formControlName="precio"
+        [class.invalido]="campoInvalido('precio')"
+        placeholder="Ej. 149.99"
+      />
+
+      @if (campoInvalido('precio')) {
+        <ul class="errores">
+          @for (mensaje of obtenerErrores('precio'); track mensaje) {
+            <li>{{ mensaje }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Campo: cantidad -->
+    <div class="campo">
+      <label for="cantidad">Cantidad en stock</label>
+      <input
+        id="cantidad"
+        type="number"
+        formControlName="cantidad"
+        [class.invalido]="campoInvalido('cantidad')"
+        placeholder="Ej. 25"
+      />
+
+      @if (campoInvalido('cantidad')) {
+        <ul class="errores">
+          @for (mensaje of obtenerErrores('cantidad'); track mensaje) {
+            <li>{{ mensaje }}</li>
+          }
+        </ul>
+      }
+    </div>
+
+    <!-- Retroalimentación visual del estado general del formulario -->
+    <div class="estado-formulario">
+      <span>Estado del formulario:</span>
+      <strong [class.valido]="productoForm.valid" [class.invalido-texto]="productoForm.invalid">
+        {{ productoForm.valid ? 'Válido' : 'Inválido' }}
+      </strong>
+    </div>
+
+    <div class="acciones">
+      <button type="submit" [disabled]="enviando">
+        {{ enviando ? 'Enviando...' : (modoEdicion ? 'Actualizar producto' : 'Registrar producto') }}
+      </button>
+      <button type="button" (click)="resetFormulario()">Limpiar</button>
+    </div>
+
+    <!-- Mensajes de retroalimentación tras el envío al backend -->
+    @if (envioExitoso) {
+      <p class="mensaje-exito">
+        {{ modoEdicion ? 'Producto actualizado correctamente' : 'Producto registrado correctamente' }}: {{ ultimoProductoEnviado?.nombre }}
+      </p>
+    }
+
+    @if (errorBackend) {
+      <p class="mensaje-error-backend">{{ errorBackend }}</p>
+    }
+  </form>
+</div>

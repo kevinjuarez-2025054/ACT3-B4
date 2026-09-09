@@ -1,0 +1,46 @@
+<h1>Productos</h1>
+
+<button (click)="recargarPagina()">
+  Recargar
+</button>
+
+<a routerLink="/productos/nuevo" style="display:inline-block; margin-left: 10px;">
+  Registrar nuevo producto
+</a>
+
+@if (errorEliminar) {
+  <p style="color:#dc2626;">{{ errorEliminar }}</p>
+}
+
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Precio</th>
+      <th>Cantidad</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    @for (producto of productos; track producto.id) {
+      <tr>
+        <td>{{ producto.id }}</td>
+        <td>{{ producto.nombre }}</td>
+        <td>Q{{ producto.precio }}</td>
+        <td>{{ producto.cantidad }}</td>
+        <td>
+          <a [routerLink]="['/productos/editar', producto.id]">Editar</a>
+          &nbsp;|&nbsp;
+          <button
+            (click)="eliminarProducto(producto.id)"
+            [disabled]="eliminando === producto.id"
+          >
+            {{ eliminando === producto.id ? 'Eliminando...' : 'Eliminar' }}
+          </button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
