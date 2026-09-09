@@ -1,0 +1,70 @@
+<h2>Lista de usuarios</h2>
+ 
+<table border="1">
+ 
+    <thead>
+ 
+        <tr>
+ 
+            <th>ID</th>
+<th>Nombre</th>
+<th>Email</th>
+<th>Rol</th>
+<th>Acción</th>
+ 
+        </tr>
+ 
+    </thead>
+ 
+    <tbody>
+ 
+        <tr
+            *ngFor="
+                let usuario of usuarios
+            "
+>
+ 
+            <td>
+                {{ usuario.id }}
+</td>
+ 
+            <td>
+                {{ usuario.nombre | mayusculas }}
+</td>
+ 
+            <td>
+                {{ usuario.email }}
+</td>
+ 
+            <td>
+                {{ usuario.rol }}
+</td>
+ 
+            <td>
+ 
+                <button
+                    (click)="
+                        seleccionarUsuario(usuario)
+                    "
+>
+                    Ver detalle
+</button>
+ 
+            </td>
+ 
+        </tr>
+ 
+    </tbody>
+ 
+</table>
+ 
+ 
+<app-usuario-detalle
+ 
+    *ngIf="usuarioSeleccionado"
+ 
+    [usuario]="usuarioSeleccionado"
+ 
+    (cerrar)="cerrarDetalle()"
+ 
+></app-usuario-detalle>
